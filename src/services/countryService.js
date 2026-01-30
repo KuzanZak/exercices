@@ -31,6 +31,23 @@ export const getCountryByCode = (code) => {
   return allCountries.find((c) => c.cca3?.toLowerCase() === code.toLowerCase());
 };
 
+export const updateCountryPopulation = (code, newPopulation) => {
+  const country = getCountryByCode(code);
+
+  if (!country) return null;
+
+  country.population = newPopulation;
+  saveCountries(loadCountries());
+
+  return country;
+};
+
+const saveCountries = (data) => {
+  const dataPath = path.join(__dirname, "../../countries.json");
+  fs.writeFileSync(dataPath, JSON.stringify(data, null, 2), "utf8");
+  countries = data;
+};
+
 export const filterFull = (country) => {
   return country;
 };

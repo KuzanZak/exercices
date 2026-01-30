@@ -1,6 +1,18 @@
 import * as countryService from "../services/countryService.js";
 import logger from "../config/logger.js";
 
+const validateCCA3Code = (code) => {
+  return /^[a-zA-Z]{3}$/.test(code);
+};
+
+const validatePopulation = (population) => {
+  return (
+    typeof population === "number" &&
+    Number.isFinite(population) &&
+    population >= 0
+  );
+};
+
 export const getAllFull = (req, res) => {
   try {
     const countries = countryService.getAllCountries();
@@ -40,8 +52,7 @@ export const getByCode = (req, res) => {
   try {
     const { code } = req.params;
 
-    const cca3Regex = /^[a-zA-Z]{3}$/;
-    if (!cca3Regex.test(code)) {
+    if (!validateCCA3Code(code)) {
       logger.warn(`Invalid code format: ${code}`);
       return res.status(400).json({
         error:
@@ -62,5 +73,42 @@ export const getByCode = (req, res) => {
   } catch (error) {
     logger.error(`Error loading country ${req.params.code}: ${error.message}`);
     res.status(500).json({ error: "Erreur lors du chargement des données" });
+  }
+};
+
+export const updatePopulation = (req, res) => {
+  try {
+    const { code } = req.params;
+    const { population } = req.body;
+
+    if (!validateCCA3Code(code)) {
+      logger.warn(`Invalid code format: ${code}`);
+      return res.status(400).json({
+        error:
+          "Format de code invalide. Le code CCA3 doit contenir exactement 3 lettres",
+      });
+    }
+
+    if (!validatePopulation(population)) {
+      logger.warn(`Invalid population value: ${population} for ${code}`);
+      return res.status(400).json({
+        error: "La population doit être un nombre positif valide",
+      });
+    }
+
+    const updated = countryService.updateCountryPopulation(code, population);
+
+    if (!updated) {
+      logger.info(`Country not found for update: ${code}`);
+      return res.status(404).json({ error: "Pays non trouvé" });
+    }
+
+    logger.info(`Population updated successfully for ${code}: ${population}`);
+    res.status(200).json(countryService.filterNormal(updated));
+  } catch (error) {
+    logger.error(
+      `Error updating population for ${req.params.code}: ${error.message}`,
+    );
+    res.status(500).json({ error: "Erreur lors de la mise à jour" });
   }
 };
