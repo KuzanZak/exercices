@@ -1,0 +1,35 @@
+{
+  "name": "exercices",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "node src/main.js",
+    "dev": "",
+    "test": "",
+    "test:e2e": "",
+    "test:unit": "",
+    "test:functional": "",
+    "lint": "",
+    "build": "minify src/main.js > ./dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KuzanZak/exercices.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/KuzanZak/exercices/issues"
+  },
+  "homepage": "https://github.com/KuzanZak/exercices#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "nodemon": "^3.1.11",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "minify": "^15.0.1"
+  }
+}
