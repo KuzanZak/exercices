@@ -39,6 +39,16 @@ export const getAllShort = (req, res) => {
 export const getByCode = (req, res) => {
   try {
     const { code } = req.params;
+
+    const cca3Regex = /^[a-zA-Z]{3}$/;
+    if (!cca3Regex.test(code)) {
+      logger.warn(`Invalid code format: ${code}`);
+      return res.status(400).json({
+        error:
+          "Format de code invalide. Le code CCA3 doit contenir exactement 3 lettres",
+      });
+    }
+
     const country = countryService.getCountryByCode(code);
 
     if (!country) {

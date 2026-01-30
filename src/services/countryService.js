@@ -12,6 +12,12 @@ const loadCountries = () => {
     const dataPath = path.join(__dirname, "../../countries.json");
     const data = fs.readFileSync(dataPath);
     countries = JSON.parse(data);
+
+    if (!Array.isArray(countries)) {
+      throw new Error(
+        "Le fichier countries.json ne contient pas un tableau valide",
+      );
+    }
   }
   return countries;
 };
